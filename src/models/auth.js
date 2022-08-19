@@ -4,7 +4,7 @@ const execPromise = promisify(pool.query).bind(pool);
 const user = 'users';
 
 exports.createUser = (data) => {
-  return execPromise(`INSERT INTO ${user} (number_visa, role) values ($1,$2)`, data);
+  return execPromise(`INSERT INTO ${user} (number_visa, role, package_name, fullname, stay_duration, paspor_number, nationality, departure, visa_type, out_date, until_date) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`, data);
 }
 
 exports.getUserByVisaNumber = (numberVisa) => {

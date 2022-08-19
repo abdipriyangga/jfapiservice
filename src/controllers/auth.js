@@ -7,12 +7,38 @@ const { APP_SECRET_KEY } = process.env;
 exports.createUser = async (req, res) => {
   const data = req.body;
   data.role = 'jamaah';
+  const str = data.departure;
+  const dataOutDate = data.outDate;
+  const dataUntilDate = data.untilDate;
+
+  const [day, month, year] = str.split('/');
+  const [outDay, outMonth, outYear] = dataOutDate.split('/');
+  const [untilDay, untilMonth, untilYear] = dataUntilDate.split('/');
+  const dateDeparture = new Date(
+    +year,
+    +month - 1,
+    +day,
+  ).toLocaleDateString();
+  const dateOut = new Date(
+    +outYear,
+    +outMonth - 1,
+    +outDay,
+  ).toLocaleDateString();
+  const dateUntil = new Date(
+    +untilYear,
+    +untilMonth - 1,
+    +untilDay,
+  ).toLocaleDateString();
+  console.log("DATE Depart: ", dateDeparture);
+  console.log("DATE OUT: ", dateOut);
+  console.log("DATE Until: ", dateUntil);
   const checkNumberVisa = await authModel.getUserByVisaNumber([data.numberVisa]);
   console.log(checkNumberVisa)
   if (checkNumberVisa.rowCount > 0) {
     return response(res, 401, "Sorry visa number already exist!")
   }
-  await authModel.createUser([data.numberVisa, data.role]);
+  await authModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil]);
+
   return response(res, 200, 'Create user has been successfully!', data);
   // if (data.numberVisa) {
   //   // data.numberVisa = await argon.hash(data.numberVisa);
@@ -60,6 +86,4 @@ exports.login = async (req, res) => {
   } catch (error) {
     console.log("why error: ", error);
   }
-
-
 };
