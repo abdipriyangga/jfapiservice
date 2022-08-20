@@ -10,18 +10,24 @@ exports.selectUserByDateDeparture = async (req, res) => {
     +day,
   ).toLocaleDateString();
   try {
-    // console.log("date: ", data);
-    await userModel.countUserByDeparture([data], (err, results, _fields) => {
+    await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
       if (!err) {
-        userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
-          const fixData = {
-            dataUser,
-            ...results,
-          }
-          console.log("FIXDATA: ", fixData);
-          return response(res, 200, 'Get data successfully!', fixData.rows);
-        })
-        // return response(res, 200, 'Get data successfully!', results.rows);
+        return response(res, 200, 'Get data successfully!', dataUser.rows);
+      }
+      else {
+        return response(res, 400, 'Cannot get data!', err);
+      }
+    })
+  } catch (error) {
+    return response(res, 500, 'An error occured!', error);
+  }
+}
+
+exports.countUserByDateDeparture = async (req, res) => {
+  try {
+    await userModel.countUserByDeparture((err, totalUser, _fields) => {
+      if (!err) {
+        return response(res, 200, 'Get data successfully!', totalUser.rows);
       }
       else {
         return response(res, 400, 'Cannot get data!', err);

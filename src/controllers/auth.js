@@ -54,19 +54,22 @@ exports.login = async (req, res) => {
   const { numberVisa } = req.body;
   console.log(numberVisa)
   try {
+    const { tokenFirebaseInput } = req.body;
     const checkNumberVisa = await authModel.getUserByVisaNumber([numberVisa]);
+    const tokenFirebase = await authModel.createTokenFirebaseUser(tokenFirebaseInput);
     if (checkNumberVisa.rowCount < 1) {
       return response(res, 404, "Visa number not found!")
     }
     console.log('data user: ', checkNumberVisa.rows[0]);
     const role = checkNumberVisa.rows[0].role;
-    console.log(role)
+
     // const jamaah = 'jamaah';
     // console.log(jamaah)
     // const compare = await argon.verify(user.numberVisa, data.numberVisa);
     const token = jwt.sign({ id: checkNumberVisa.rows[0].id, number_visa: checkNumberVisa.rows[0].number_visa, role: checkNumberVisa.rows[0].role }, APP_SECRET_KEY, { expiresIn: '24h' });
-    console.log("TOJEN", token)
-    return response(res, 200, 'Login Success!', { token, role });
+    console.log("TOJEN", token);
+
+    return response(res, 200, 'Login Success!', { token, role, tokenFirebase });
     // if (role !== 'jamaah') {
     //   // if (compare) {
     //   // } else {
