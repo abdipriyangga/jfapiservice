@@ -8,6 +8,7 @@ const cors = require('cors');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(process.env.APP_UPLOAD_ROUTE, express.static('public/pictures'))
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })
