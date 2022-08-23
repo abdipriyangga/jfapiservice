@@ -9,6 +9,7 @@ exports.createUser = async (req, res) => {
   const dataOutDate = data.outDate;
   const dataUntilDate = data.untilDate;
   try {
+    const groupName = data.groupName.replace(/\s/g, '');
     const [day, month, year] = str.split('/');
     const [outDay, outMonth, outYear] = dataOutDate.split('/');
     const [untilDay, untilMonth, untilYear] = dataUntilDate.split('/');
@@ -29,10 +30,11 @@ exports.createUser = async (req, res) => {
     ).toLocaleDateString();
     data.pictures = path.join(process.env.APP_UPLOAD_ROUTE, req.file.filename);
     const checkNumberVisa = await authModel.getUserByVisaNumber([data.numberVisa]);
+    console.log("GROUP NAME: ", groupName);
     if (checkNumberVisa.rowCount > 0) {
       return response(res, 401, "Sorry visa number already exist!")
     }
-    await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, data.groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
+    await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
     return response(res, 200, 'Create user has been successfully!', data);
 
   } catch (error) {
@@ -89,14 +91,11 @@ exports.countUserByDateDeparture = async (req, res) => {
 exports.getProfile = async (req, res) => {
   try {
     await userModel.getUserProfile([req.authUser.id], (err, results, _fields) => {
-      console.log(req.authUser.id)
       if (!err) {
-        // results.forEach((img, index) => {
-        //   if (results[index].images !== null && !results[index].images.startsWith('http')) {
-        //     results[index].images = `${APP_URL}${results[index].images}`;
-        //   }
-        // });
         const data = results.rows[0];
+        if (data.picture !== null && !data.picture.startsWith('http')) {
+          data.picture = `${process.env.APP_URL_ONLINE}${data.picture}`;
+        }
         return response(res, 200, 'Get data successfully!', data);
       }
       else {

@@ -1,6 +1,5 @@
 const notif = {};
 const admin = require('firebase-admin');
-// const key = require('../../private/jf-service-ede3e-firebase-adminsdk-aqxc6-e3deaa059f.json');
 const key = require('../../private/jf-service-ede3e-firebase-adminsdk-aqxc6-b625e9d7cc.json')
 admin.initializeApp({
   credential: admin.credential.cert(key),
@@ -12,7 +11,7 @@ exports.notification = async (req, res) => {
   try {
     const { body } = req;
     await Messaging.send({
-      token: body.receiver,
+      topic: body.topic,
       notification: {
         title: body.title,
         body: body.message,
