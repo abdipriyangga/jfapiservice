@@ -7,6 +7,7 @@ const mainRouter = require('./src/routes/index');
 const cors = require('cors');
 
 app.use(cors());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(process.env.APP_UPLOAD_ROUTE, express.static('public/pictures'))
 app.listen(port, () => {
