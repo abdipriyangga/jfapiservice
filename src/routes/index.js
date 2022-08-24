@@ -11,6 +11,6 @@ mainRouter.use(APP_UPLOAD_ROUTE, express.static(APP_UPLOAD_PATH));
 mainRouter.use('/auth', authRouter);
 mainRouter.use('/dataJamaah', userRouter);
 mainRouter.use('/welcome', welcomeRouter);
-mainRouter.use('/notification', notificationRouter);
+// mainRouter.use('/notification', notificationRouter);
 mainRouter.use('/category', categoryRouter);
 module.exports = mainRouter;

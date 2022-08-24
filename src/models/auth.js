@@ -11,7 +11,7 @@ exports.createTokenFirebaseUser = (data) => {
 }
 
 exports.getUserByVisaNumber = (numberVisa) => {
-  return execPromise(`SELECT id, number_visa, role from ${user} where number_visa = $1`, numberVisa)
+  return execPromise(`SELECT id, number_visa, role, group_name from ${user} where number_visa = $1`, numberVisa)
 };
 
 exports.getUserById = (numberVisa) => {

@@ -3,7 +3,7 @@ const { APP_SECRET_KEY } = process.env;
 const { response } = require('./response');
 
 const token = (req, res, next) => {
-  console.log(req.headers);
+  console.log("HEADERS: ", req.headers);
   if (req.headers.authorization) {
     if (req.headers.authorization.startsWith('Bearer')) {
       try {
@@ -14,6 +14,12 @@ const token = (req, res, next) => {
           next();
         }
         else if (req.authUser.role === 'tour leader') {
+          next();
+        }
+        else if (req.authUser.role === 'muttawif') {
+          next();
+        }
+        else if (req.authUser.role === 'Umrah') {
           next();
         }
         else {
