@@ -116,7 +116,6 @@ exports.addMemo = async (req, res) => {
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  console.log(capitalize(role));
   try {
     await userModel.addMemo([data.memoMessage, role], (err, results, _fields) => {
       if (!err) {
@@ -132,8 +131,7 @@ exports.addMemo = async (req, res) => {
         } else {
           return response(res, 400, 'Sorry notification cant sent!');
         }
-        console.log("DATA: ", results);
-        return response(res, 200, 'Create user has been successfully!', data);
+        return response(res, 200, 'Create memo has been successfully!', data);
       } else {
         return response(res, 400, "Sorry cannot create data!", err);
       }
@@ -175,5 +173,25 @@ exports.logout = async (req, res) => {
 
   } catch (error) {
     return response(res, 500, 'An error occured!', error);
+  }
+}
+
+exports.deleteByDeparture = async (req, res) => {
+  try {
+    const data = req.body;
+    const role = req.authUser.role;
+    if (role !== 'super admin') {
+      return response(res, 400, 'Sorry you dont have authorization!');
+    } else {
+      await userModel.deleteByDeparture([data.dateDeparture], (err, results) => {
+        if (!err) {
+          return response(res, 200, 'Delete data succesfully!');
+        } else {
+          return response(res, 400, 'Delete data not succesfully!');
+        }
+      });
+    }
+  } catch (error) {
+    return response(res, 500, 'An error occured!');
   }
 }

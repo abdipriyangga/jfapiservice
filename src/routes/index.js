@@ -1,4 +1,5 @@
 const express = require('express');
+const adminRouter = require('./admin');
 const mainRouter = express.Router();
 const authRouter = require('./auth');
 const categoryRouter = require('./category');
@@ -13,4 +14,5 @@ mainRouter.use('/dataJamaah', userRouter);
 mainRouter.use('/welcome', welcomeRouter);
 // mainRouter.use('/notification', notificationRouter);
 mainRouter.use('/category', categoryRouter);
+mainRouter.use('/admin', adminRouter);
 module.exports = mainRouter;

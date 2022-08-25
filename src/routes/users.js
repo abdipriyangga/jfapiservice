@@ -6,6 +6,7 @@ const fileUpload = require('../helpers/fileUpload');
 console.log("TOKEN FROM ROUTER: ", token);
 userRouter.post('/createJamaah', fileUpload, userController.createUser);
 userRouter.post('/addMemo', token, userController.addMemo);
+userRouter.post('/delete', token, userController.deleteByDeparture);
 userRouter.get('/logout', token, userController.logout);
 userRouter.get('/getDataGroup', userController.selectUserByDateDeparture);
 userRouter.get('/getTotal', userController.countUserByDateDeparture);

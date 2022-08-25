@@ -15,7 +15,7 @@ exports.login = async (req, res) => {
     console.log('data user: ', checkNumberVisa.rows[0]);
     const role = checkNumberVisa.rows[0].role;
     const id = getIdUser.rows[0].id;
-    const token = jwt.sign({ id: checkNumberVisa.rows[0].id, number_visa: checkNumberVisa.rows[0].number_visa, role: checkNumberVisa.rows[0].role, group_name: checkNumberVisa.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '60s' });
+    const token = jwt.sign({ id: checkNumberVisa.rows[0].id, number_visa: checkNumberVisa.rows[0].number_visa, role: checkNumberVisa.rows[0].role, group_name: checkNumberVisa.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '12h' });
     console.log("TOJEN", token);
     // const tokenFirebase = await authModel.createTokenFirebaseUser([data.tokenFirebaseInput, id]);
     // console.log("TOJEN", tokenFirebase);

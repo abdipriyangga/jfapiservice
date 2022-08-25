@@ -26,3 +26,7 @@ exports.addMemo = (data, cb) => {
 exports.getMemo = (cb) => {
   return execPromise(`SELECT memo_message, created_by,TO_CHAR(${memo}.created_at :: DATE, 'dd/mm/yyyy') as created_at from ${memo}`, cb);
 }
+
+exports.deleteByDeparture = (data, cb) => {
+  return execPromise(`DELETE from ${user} Where departure = $1`, data, cb);
+}
