@@ -7,7 +7,7 @@ const mainRouter = require('./src/routes/index');
 const cors = require('cors');
 
 app.use(cors({
-  origin: ["http://localhost:6969", "http://localhost:3000", "https://jannahfirdaus.com", "https://4cac-125-161-9-162.ap.ngrok.io"]
+  origin: ["http://localhost:6969", "http://localhost:3000", "https://jannahfirdaus.com", "https://b948-180-243-12-59.ap.ngrok.io"]
 }));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -9,7 +9,7 @@ exports.countUserByDeparture = (cb) => {
 };
 
 exports.getUserByDeparture = (dateDeparture, cb) => {
-  return execPromise(`Select id, number_visa, package_name, fullname, stay_duration, paspor_number, nationality, TO_CHAR(${user}.departure :: DATE, 'dd/mm/yyyy') as departure, visa_type, TO_CHAR(${user}.out_date :: DATE, 'dd/mm/yyyy') as out_date, TO_CHAR(${user}.until_date :: DATE, 'dd/mm/yyyy') as until_date, link_group, group_name, picture, id_category from ${user} where departure = $1`, dateDeparture, cb);
+  return execPromise(`Select id, number_visa, package_name, fullname, stay_duration, paspor_number, nationality, TO_CHAR(${user}.departure :: DATE, 'mm/dd/yyyy') as departure, visa_type, TO_CHAR(${user}.out_date :: DATE, 'mm/dd/yyyy') as out_date, TO_CHAR(${user}.until_date :: DATE, 'mm/dd/yyyy') as until_date, link_group, group_name, picture, id_category from ${user} where departure = $1`, dateDeparture, cb);
 };
 
 exports.createUser = (data) => {
@@ -17,7 +17,7 @@ exports.createUser = (data) => {
 }
 
 exports.getUserProfile = (id, cb) => {
-  return execPromise(`Select id, number_visa, package_name, fullname, stay_duration, paspor_number, nationality, TO_CHAR(${user}.departure :: DATE, 'dd/mm/yyyy') as departure, visa_type, TO_CHAR(${user}.out_date :: DATE, 'dd/mm/yyyy') as out_date, TO_CHAR(${user}.until_date :: DATE, 'dd/mm/yyyy') as until_date, link_group, group_name, picture, id_category, hotel_mekkah, hotel_madinah from ${user} where id = $1`, id, cb);
+  return execPromise(`Select id, number_visa, package_name, fullname, stay_duration, paspor_number, nationality, TO_CHAR(${user}.departure :: DATE, 'mm/dd/yyyy') as departure, visa_type, TO_CHAR(${user}.out_date :: DATE, 'mm/dd/yyyy') as out_date, TO_CHAR(${user}.until_date :: DATE, 'mm/dd/yyyy') as until_date, link_group, group_name, picture, id_category, hotel_mekkah, hotel_madinah from ${user} where id = $1`, id, cb);
 };
 
 exports.addMemo = (data, cb) => {
