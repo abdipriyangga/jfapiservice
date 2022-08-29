@@ -177,20 +177,16 @@ exports.logout = async (req, res) => {
 }
 
 exports.deleteByDeparture = async (req, res) => {
+  const data = req.body;
   try {
     const data = req.body;
-    const role = req.authUser.role;
-    if (role !== 'super admin') {
-      return response(res, 400, 'Sorry you dont have authorization!');
-    } else {
-      await userModel.deleteByDeparture([data.dateDeparture], (err, results) => {
-        if (!err) {
-          return response(res, 200, 'Delete data succesfully!');
-        } else {
-          return response(res, 400, 'Delete data not succesfully!');
-        }
-      });
-    }
+    await userModel.deleteByDeparture([data.dateDeparture], (err, results) => {
+      if (!err) {
+        return response(res, 200, 'Delete data succesfully!');
+      } else {
+        return response(res, 400, 'Delete data not succesfully!');
+      }
+    });
   } catch (error) {
     return response(res, 500, 'An error occured!');
   }
