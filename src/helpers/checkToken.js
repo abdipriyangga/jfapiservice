@@ -19,7 +19,7 @@ const token = (req, res, next) => {
         else if (req.authUser.role === 'muttawif') {
           next();
         }
-        else if (req.authUser.role === 'super admin') {
+        else if (req.authUser.role === 'superAdmin') {
           next();
         }
         else {
