@@ -95,7 +95,7 @@ exports.getProfile = async (req, res) => {
       if (!err) {
         const data = results.rows[0];
         if (data.picture !== null && !data.picture.startsWith('http')) {
-          data.picture = `${process.env.APP_URL_ONLINE}${data.picture}`;
+          data.picture = `${data.picture}`;
         }
         return response(res, 200, 'Get data successfully!', data);
       }
@@ -179,10 +179,9 @@ exports.logout = async (req, res) => {
 exports.deleteByDeparture = async (req, res) => {
   const data = req.body;
   try {
-    const data = req.body;
     await userModel.deleteByDeparture([data.dateDeparture], (err, results) => {
       if (!err) {
-        return response(res, 200, 'Delete data succesfully!');
+        return response(res, 200, 'Delete data succesfully!', results);
       } else {
         return response(res, 400, 'Delete data not succesfully!');
       }
