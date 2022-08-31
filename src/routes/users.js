@@ -3,7 +3,7 @@ const userRouter = express.Router();
 const userController = require('../controllers/users');
 const token = require('../helpers/checkToken');
 const fileUpload = require('../helpers/fileUpload');
-console.log("TOKEN FROM ROUTER: ", token);
+
 userRouter.post('/createJamaah', fileUpload, userController.createUser);
 userRouter.post('/addMemo', token, userController.addMemo);
 userRouter.post('/delete', userController.deleteByDeparture);

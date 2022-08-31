@@ -190,3 +190,4 @@ exports.deleteByDeparture = async (req, res) => {
     return response(res, 500, 'An error occured!');
   }
 }
+

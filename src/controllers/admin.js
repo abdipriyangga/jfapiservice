@@ -1,9 +1,12 @@
 const adminModel = require('../models/admin');
+const userModel = require('../models/users');
 const { response } = require('../helpers/response');
 const path = require('path');
 const argon2 = require('argon2');
 const { APP_SECRET_KEY } = process.env;
 const jwt = require('jsonwebtoken');
+const fs = require("fs");
+const PDFDocument = require("pdfkit-table");
 
 exports.createUser = async (req, res) => {
   const data = req.body;
@@ -44,3 +47,65 @@ exports.login = async (req, res) => {
   //   console.log("why error: ", error);
   // }
 };
+
+exports.downloadPdf = async (req, res) => {
+  // init document
+  let doc = new PDFDocument({ margin: 10, size: 'A4' });
+  // save document
+  const time = new Date()
+  let name = 'document' + '-' + time.getTime();
+  const save = path.join(process.cwd(), "public", "documents")
+  doc.pipe(fs.createWriteStream(`${save}/${name}.pdf`));
+  const { dateDeparture } = req.body;
+  const [month, day, year] = dateDeparture.split('/');
+  const data = new Date(
+    +year,
+    +month - 1,
+    +day,
+  ).toLocaleDateString();
+  console.log("DATA DATE: ", data);
+  const getData = await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
+    if (!err) {
+      ; (async function () {
+        // table 
+        const table = {
+          title: { label: `DATA JAMAAH TANGGAL: ${dateDeparture}`, fontSize: 8 },
+          headers: [{ label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "name" }, { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Nomor Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Tanggal Dikeluarkan", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Berlaku Sampai", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Durasi Tinggal", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Tipe Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Nomor Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Negara", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }],
+          datas: [
+            dataUser.rows.map((x) => {
+              return ({
+                name: x
+              })
+            })
+          ],
+          // rows: [
+          //   dataUser.rows.map((x) => {
+          //     return ({
+          //       name: x.fullname.name
+          //     })
+          //   })
+          // ]
+        };
+        // A4 595.28 x 841.89 (portrait) (about width sizes)
+        await doc.table(table, {
+          prepareHeader: () => {
+            doc.font("Helvetica-Bold").fontSize(6)
+          },
+          prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+            doc.font("Helvetica").fontSize(8);
+            indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+          },
+        });
+        // done!
+        doc.end();
+      })();
+      return response(res, 200, 'Get data successfully!', dataUser.rows);
+    }
+    else {
+      return response(res, 400, 'Cannot get data!', err);
+    }
+  })
+  console.log("getDAta: ", getData);
+
+
+}
