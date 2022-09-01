@@ -68,23 +68,46 @@ exports.downloadPdf = async (req, res) => {
     if (!err) {
       ; (async function () {
         // table 
+        const data = dataUser.rows.map((x) => {
+          return {
+            name: x.fullname,
+            paket: x.package_name,
+            visaNumber: x.number_visa,
+            outDate: x.out_date,
+            validDate: x.until_date,
+            stayDuration: x.stay_duration,
+            visaType: x.visa_type,
+            pasporNumber: x.paspor_number,
+            nationality: x.nationality
+          }
+        })
+        console.log("DATTA: ", data)
         const table = {
           title: { label: `DATA JAMAAH TANGGAL: ${dateDeparture}`, fontSize: 8 },
-          headers: [{ label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "name" }, { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Nomor Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Tanggal Dikeluarkan", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Berlaku Sampai", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Durasi Tinggal", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Tipe Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Nomor Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }, { label: "Negara", align: "center", headerColor: "#DCAF34", headerOpacity: 1 }],
-          datas: [
-            dataUser.rows.map((x) => {
-              return ({
-                name: x
-              })
-            })
-          ],
-          // rows: [
-          //   dataUser.rows.map((x) => {
-          //     return ({
-          //       name: x.fullname.name
-          //     })
-          //   })
-          // ]
+          headers: [
+            { label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "name" },
+            { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "paket" },
+            { label: "Nomor Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "nomorVisa" },
+            { label: "Tanggal Dikeluarkan", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "outDate" },
+            { label: "Berlaku Sampai", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "validDate" },
+            { label: "Durasi Tinggal", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "stayDuration" },
+            { label: "Tipe Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "visaType" },
+            { label: "Nomor Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "pasporNumber" },
+            { label: "Negara", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "nationality" }],
+          datas: dataUser.rows.map((x) => {
+            console.log(x)
+            return {
+              name: x.fullname,
+              paket: x.package_name,
+              nomorVisa: x.number_visa,
+              outDate: x.out_date,
+              validDate: x.until_date,
+              stayDuration: x.stay_duration,
+              visaType: x.visa_type,
+              pasporNumber: x.paspor_number,
+              nationality: x.nationality
+            }
+          })
         };
         // A4 595.28 x 841.89 (portrait) (about width sizes)
         await doc.table(table, {
@@ -93,7 +116,7 @@ exports.downloadPdf = async (req, res) => {
           },
           prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
             doc.font("Helvetica").fontSize(8);
-            indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+            indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.10);
           },
         });
         // done!
