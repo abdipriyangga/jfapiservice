@@ -24,28 +24,24 @@ exports.createUser = async (req, res) => {
 
 exports.login = async (req, res) => {
   const data = req.body;
-  console.log("DATA: ", data)
-  const checkProfile = await adminModel.getUserProfile([data.fullname]);
-  console.log("CEK: ", checkProfile.rows[0]);
-  if (checkProfile.rowCount < 1) {
-    return response(res, 404, "user not found!")
-  } else {
-    const hashPassword = checkProfile.rows[0].password;
-    const compare = await argon2.verify(hashPassword, data.password);
-    console.log("Compare: ", compare);
-    if (compare) {
-      const role = checkProfile.rows[0].role;
-      const token = jwt.sign({ id: checkProfile.rows[0].id, fullname: checkProfile.rows[0].fullname, role: checkProfile.rows[0].role }, APP_SECRET_KEY, { expiresIn: '12h' });
-      return response(res, 200, 'Login Admin Success!', { token, role });
+  try {
+    const checkProfile = await adminModel.getUserProfile([data.fullname]);
+    if (checkProfile.rowCount < 1) {
+      return response(res, 404, "user not found!")
     } else {
-      return response(res, 401, 'Wrong email or password!');
+      const hashPassword = checkProfile.rows[0].password;
+      const compare = await argon2.verify(hashPassword, data.password);
+      if (compare) {
+        const role = checkProfile.rows[0].role;
+        const token = jwt.sign({ id: checkProfile.rows[0].id, fullname: checkProfile.rows[0].fullname, role: checkProfile.rows[0].role }, APP_SECRET_KEY, { expiresIn: '12h' });
+        return response(res, 200, 'Login Admin Success!', { token, role });
+      } else {
+        return response(res, 401, 'Wrong email or password!');
+      }
     }
+  } catch (error) {
+    console.log("why error: ", error);
   }
-  // try {
-
-  // } catch (error) {
-  //   console.log("why error: ", error);
-  // }
 };
 
 exports.downloadPdf = async (req, res) => {
@@ -54,9 +50,10 @@ exports.downloadPdf = async (req, res) => {
   // save document
   const time = new Date()
   let name = 'document' + '-' + time.getTime();
-  const save = path.join(process.cwd(), "public", "documents");
-  console.log(process.cwd())
-  doc.pipe(fs.createWriteStream(`${save}/${name}.pdf`));
+  process.chdir('../../../');
+  const saveOut = path.join(process.cwd(), "Downloads");
+
+  doc.pipe(fs.createWriteStream(`${saveOut}/${name}.pdf`));
   const { dateDeparture } = req.body;
   const [month, day, year] = dateDeparture.split('/');
   const data = new Date(
@@ -64,25 +61,10 @@ exports.downloadPdf = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
-  console.log("DATA DATE: ", data);
-  const getData = await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
+  await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
     if (!err) {
       ; (async function () {
         // table 
-        const data = dataUser.rows.map((x) => {
-          return {
-            name: x.fullname,
-            paket: x.package_name,
-            visaNumber: x.number_visa,
-            outDate: x.out_date,
-            validDate: x.until_date,
-            stayDuration: x.stay_duration,
-            visaType: x.visa_type,
-            pasporNumber: x.paspor_number,
-            nationality: x.nationality
-          }
-        })
-        console.log("DATTA: ", data)
         const table = {
           title: { label: `DATA JAMAAH TANGGAL: ${dateDeparture}`, fontSize: 8 },
           headers: [
@@ -129,7 +111,4 @@ exports.downloadPdf = async (req, res) => {
       return response(res, 400, 'Cannot get data!', err);
     }
   })
-  console.log("getDAta: ", getData);
-
-
 }
