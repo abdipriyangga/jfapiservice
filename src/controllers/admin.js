@@ -46,14 +46,7 @@ exports.login = async (req, res) => {
 
 exports.downloadPdf = async (req, res) => {
   // init document
-  let doc = new PDFDocument({ margin: 10, size: 'A4' });
-  // save document
-  const time = new Date()
-  let name = 'document' + '-' + time.getTime();
-  process.chdir('../../../');
-  const saveOut = path.join(process.cwd(), "Downloads");
-
-  doc.pipe(fs.createWriteStream(`${saveOut}/${name}.pdf`));
+  let doc = new PDFDocument({ margin: 10, size: 'A4', bufferPages: true });
   const { dateDeparture } = req.body;
   const [month, day, year] = dateDeparture.split('/');
   const data = new Date(
@@ -61,6 +54,18 @@ exports.downloadPdf = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
+  // save document
+  const time = new Date();
+  let name = 'document' + '-' + time.getTime();
+  // process.chdir('../../');
+  const saveOut = path.resolve(path.join(process.cwd(), 'public', 'documents'));
+  doc.pipe(fs.createWriteStream(`${saveOut}/${name}`));
+  // const stream = res.writeHead(200, {
+  //   'Content-Type': 'application/pdf',
+  //   'Content-disposition': `attachment;filename=${name}.pdf`,
+  // });
+  // doc.on('data', (chunk) => stream.write(chunk));
+  // doc.on('end', () => stream.end());
   await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
     if (!err) {
       ; (async function () {
@@ -92,6 +97,7 @@ exports.downloadPdf = async (req, res) => {
             }
           })
         };
+        doc.moveDown();
         // A4 595.28 x 841.89 (portrait) (about width sizes)
         await doc.table(table, {
           prepareHeader: () => {
@@ -102,13 +108,19 @@ exports.downloadPdf = async (req, res) => {
             indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.10);
           },
         });
-        // done!
-        doc.end();
       })();
+      // let file = fs.createReadStream(`${saveOut}/${name}`);
+      // let stat = fs.statSync(`${saveOut}/${name}`);
+      // res.setHeader('Content-Length', stat.size);
+      // res.setHeader('Content-Type', 'application/pdf');
+      // res.setHeader('Content-Disposition', `attachment; filename=dataJamaah.pdf`);
+      // file.pipe(res)
+      doc.end();
       return response(res, 200, 'Get data successfully!', dataUser.rows);
     }
     else {
       return response(res, 400, 'Cannot get data!', err);
     }
   })
+
 }
