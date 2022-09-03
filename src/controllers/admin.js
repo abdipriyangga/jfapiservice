@@ -54,7 +54,8 @@ exports.downloadPdf = async (req, res) => {
   // save document
   const time = new Date()
   let name = 'document' + '-' + time.getTime();
-  const save = path.join(process.cwd(), "public", "documents")
+  const save = path.join(process.cwd(), "public", "documents");
+  console.log(process.cwd())
   doc.pipe(fs.createWriteStream(`${save}/${name}.pdf`));
   const { dateDeparture } = req.body;
   const [month, day, year] = dateDeparture.split('/');
