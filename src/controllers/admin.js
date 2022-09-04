@@ -97,7 +97,6 @@ exports.downloadPdf = async (req, res) => {
             }
           })
         };
-        doc.moveDown();
         // A4 595.28 x 841.89 (portrait) (about width sizes)
         await doc.table(table, {
           prepareHeader: () => {
