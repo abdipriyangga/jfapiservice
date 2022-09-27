@@ -4,7 +4,7 @@ const { response } = require('../helpers/response');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const admin = require('firebase-admin');
-const key = require('../../private/jf-service-ede3e-firebase-adminsdk-aqxc6-b625e9d7cc.json')
+const key = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-2f9a6caf7d.json')
 admin.initializeApp({
   credential: admin.credential.cert(key),
 })
