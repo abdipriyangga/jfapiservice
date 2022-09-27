@@ -60,12 +60,6 @@ exports.downloadPdf = async (req, res) => {
   // process.chdir('../../');
   const saveOut = path.resolve(path.join(process.cwd(), 'public', 'documents'));
   doc.pipe(fs.createWriteStream(`${saveOut}/${name}`));
-  // const stream = res.writeHead(200, {
-  //   'Content-Type': 'application/pdf',
-  //   'Content-disposition': `attachment;filename=${name}.pdf`,
-  // });
-  // doc.on('data', (chunk) => stream.write(chunk));
-  // doc.on('end', () => stream.end());
   await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
     if (!err) {
       ; (async function () {
