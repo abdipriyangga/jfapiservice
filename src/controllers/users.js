@@ -112,7 +112,6 @@ exports.addMemo = async (req, res) => {
   const data = req.body;
   const role = req.authUser.role;
   const topic = req.authUser.group_name;
-  console.log("AUTHUSER: ", req.authUser);
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -137,7 +136,6 @@ exports.addMemo = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("ERROR: ", error)
     return response(res, 500, "An error occured!", error);
   }
 };
@@ -160,7 +158,6 @@ exports.getMemo = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    console.log("AUTHUSER: ", req.authUser);
     if (req.headers.authorization) {
       delete token;
       const token = req.headers["authorization"];

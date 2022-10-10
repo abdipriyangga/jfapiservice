@@ -3,7 +3,6 @@ const { APP_SECRET_KEY } = process.env;
 const { response } = require('./response');
 
 const token = (req, res, next) => {
-  console.log("HEADERS: ", req.headers);
   if (req.headers.authorization) {
     if (req.headers.authorization.startsWith('Bearer')) {
       try {
@@ -23,10 +22,12 @@ const token = (req, res, next) => {
           next();
         }
         else {
-          return response(res, 400, 'Sorry you dont have authorization!');
+          return response(res, 401, 'Sorry you dont have authorization!');
         }
       } catch (err) {
-        return response(res, 401, 'Session expired, please login!');
+        if (err.name === 'TokenExpiredError') {
+          return response(res, 400, 'Session expired, please login!', err);
+        }
       }
     }
   } else {
