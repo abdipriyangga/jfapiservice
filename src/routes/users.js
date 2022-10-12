@@ -4,7 +4,7 @@ const userController = require('../controllers/users');
 const token = require('../helpers/checkToken');
 const fileUpload = require('../helpers/fileUpload');
 
-userRouter.post('/createJamaah', fileUpload, token, userController.createUser);
+userRouter.post('/createJamaah', fileUpload, userController.createUser);
 userRouter.post('/addMemo', token, userController.addMemo);
 userRouter.post('/delete', userController.deleteByDeparture);
 userRouter.get('/logout', token, userController.logout);
