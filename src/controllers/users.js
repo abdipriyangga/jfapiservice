@@ -39,9 +39,8 @@ exports.createUser = async (req, res) => {
     ).toLocaleDateString();
     data.pictures = path.join(process.env.APP_UPLOAD_ROUTE, req.file.filename);
     const checkNumberVisa = await authModel.getUserByVisaNumber([data.numberVisa]);
-    console.log("GROUP NAME: ", groupName);
     if (checkNumberVisa.rowCount > 0) {
-      return response(res, 401, "Sorry visa number already exist!")
+      return response(res, 401, "Sorry your passport number already exist!")
     }
     await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
     return response(res, 200, 'Create user has been successfully!', data);
@@ -60,7 +59,6 @@ exports.selectUserByDateDeparture = async (req, res) => {
       +month - 1,
       +day,
     ).toLocaleDateString();
-    console.log("DATA DATE: ", data);
     await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
       if (!err) {
         return response(res, 200, 'Get data successfully!', dataUser.rows);
@@ -161,7 +159,6 @@ exports.logout = async (req, res) => {
     if (req.headers.authorization) {
       delete token;
       const token = req.headers["authorization"];
-      console.log("TOKEN: ", token)
       return response(res, 200, 'Logout succesfully!');
     }
     else {

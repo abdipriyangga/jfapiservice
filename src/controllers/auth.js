@@ -10,13 +10,13 @@ exports.login = async (req, res) => {
   const checkNumberVisa = await authModel.getUserByVisaNumber([numberVisa]);
   try {
     if (checkNumberVisa.rowCount < 1) {
-      return response(res, 404, "Visa number not found!")
+      return response(res, 404, "Passport number not found!")
     } else {
       if (checkNumberVisa.rows[0].is_login === null) {
         await authModel.createIsLogin(['true', numberVisa])
         const role = checkNumberVisa.rows[0].role;
         const id = getIdUser.rows[0].id;
-        const token = jwt.sign({ id: checkNumberVisa.rows[0].id, number_visa: checkNumberVisa.rows[0].number_visa, role: checkNumberVisa.rows[0].role, group_name: checkNumberVisa.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '13d' });
+        const token = jwt.sign({ id: checkNumberVisa.rows[0].id, number_visa: checkNumberVisa.rows[0].number_visa, role: checkNumberVisa.rows[0].role, group_name: checkNumberVisa.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '1 minutes' });
         // const tokenFirebase = await authModel.createTokenFirebaseUser([data.tokenFirebaseInput, id]);
         // console.log("TOJEN", tokenFirebase);
         return response(res, 200, 'Login Success!', { token, role, data });
@@ -27,6 +27,6 @@ exports.login = async (req, res) => {
     }
 
   } catch (error) {
-    console.log("why error: ", error);
+    return response(res, 500, "An error occured!", error);
   }
 };
