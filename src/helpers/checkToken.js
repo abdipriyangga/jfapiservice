@@ -26,6 +26,7 @@ const token = (req, res, next) => {
         }
       } catch (err) {
         if (err.name === 'TokenExpiredError') {
+          console.error("ERROR: ", err)
           return response(res, 400, 'Session expired, please login!', err);
         }
       }

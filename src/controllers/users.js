@@ -157,9 +157,13 @@ exports.getMemo = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     if (req.headers.authorization) {
-      delete token;
-      const token = req.headers["authorization"];
-      return response(res, 200, 'Logout succesfully!');
+      await userModel.logoutUsers(['false', req.authUser.id], (err, results, _fields) => {
+        if (!err) {
+          return response(res, 200, 'Logout succesfully!');
+        } else {
+          return response(res, 400, 'Sorry logout failed!');
+        }
+      })
     }
     else {
       return response(res, 400, 'Sorry cannot logout!');

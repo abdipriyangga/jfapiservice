@@ -30,3 +30,6 @@ exports.getMemo = (cb) => {
 exports.deleteByDeparture = (data, cb) => {
   return execPromise(`DELETE from ${user} Where departure = $1`, data, cb);
 }
+exports.logoutUsers = (data, cb) => {
+  return execPromise(`UPDATE ${user} SET is_login = $1 where id = $2`, data, cb);
+}

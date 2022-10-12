@@ -12,7 +12,7 @@ exports.login = async (req, res) => {
     if (checkNumberPassport.rowCount < 1) {
       return response(res, 404, "Passport number not found!")
     } else {
-      if (checkNumberPassport.rows[0].is_login === null) {
+      if (checkNumberPassport.rows[0].is_login === null || checkNumberPassport.rows[0].is_login === 'false') {
         await authModel.createIsLogin(['true', numberPassport])
         const role = checkNumberPassport.rows[0].role;
         const id = getIdUser.rows[0].id;
