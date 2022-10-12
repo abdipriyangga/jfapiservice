@@ -7,6 +7,7 @@ const { APP_SECRET_KEY } = process.env;
 const jwt = require('jsonwebtoken');
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
+const excelJS = require("exceljs");
 
 exports.createUser = async (req, res) => {
   const data = req.body;
@@ -116,4 +117,70 @@ exports.downloadPdf = async (req, res) => {
     }
   })
 
+}
+
+exports.downloadFile = async (req, res) => {
+  const workbook = new excelJS.Workbook();  // Create a new workbook
+  const worksheet = workbook.addWorksheet("Data Jamaah", { properties: { tabColor: { argb: 'FF00FF00' } }, headerFooter: { firstHeader: "Data Jamaah", firstFooter: "Hello" } }); // New Worksheet
+  const saves = path.join(process.cwd(), 'public', 'documents');  // Path to download excel
+  const { dateDeparture } = req.body;
+  const [month, day, year] = dateDeparture.split('/');
+  const data = new Date(
+    +year,
+    +month - 1,
+    +day,
+  ).toLocaleDateString();
+  let name = 'DataJamaah';
+  const time = new Date();
+  await userModel.getUserByDeparture([data], (err, results, _fields) => {
+    if (!err) {
+      // Column for data in excel. key must match data key
+      worksheet.headerFooter = { firstFooter: "Hello" }
+      worksheet.columns = [
+        { header: "No", key: "s_no", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Nama Lengkap", key: "fullname", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Paket", key: "package_name", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Nomor Visa", key: "number_visa", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Tanggal Dikeluarkan", key: "out_date", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Berlaku Sampai", key: "until_date", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Durasi Tinggal", key: "stay_duration", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Tipe Visa", key: "visa_type", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Nomor Passport", key: "paspor_number", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Negara", key: "nationality", width: 23, style: { alignment: { horizontal: 'center' } } },
+      ];
+      // Looping through User data
+      let counter = 1;
+      results.rows.map((x) => {
+        x.s_no = counter;
+        worksheet.addRow(x); // Add data in worksheet
+        counter++;
+      });
+      console.log(results)
+      // Making first line in excel bold
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true };
+      });
+      const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
+      return response(res, 200, 'Get data successfully!', data);
+    } else {
+      return response(res, 400, 'Cannot get data!', err);
+    }
+  })
+
+  // try {
+  //   const data = await workbook.xlsx.writeFile(`${saves}/users.xlsx`)
+  //     .then(() => {
+  //       res.send({
+  //         status: "success",
+  //         message: "file successfully downloaded",
+  //         path: `${saves}/users.xlsx`,
+  //         results: data
+  //       });
+  //     });
+  // } catch (err) {
+  //   res.send({
+  //     status: "error",
+  //     message: "Something went wrong",
+  //   });
+  // }
 }

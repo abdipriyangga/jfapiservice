@@ -8,6 +8,7 @@ console.log("TOKEN FROM ROUTER: ", token);
 adminRouter.post('/create', fileUpload, adminController.createUser);
 adminRouter.post('/login', adminController.login);
 adminRouter.post('/downloadPdf', adminController.downloadPdf);
+adminRouter.post('/downloadFiles', adminController.downloadFile);
 
 
 module.exports = adminRouter;
