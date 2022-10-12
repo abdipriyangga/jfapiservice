@@ -11,14 +11,14 @@ exports.createTokenFirebaseUser = (data) => {
 }
 
 exports.createIsLogin = (data) => {
-  return execPromise(`UPDATE ${user} SET is_login = $1 where number_visa = $2 `, data);
+  return execPromise(`UPDATE ${user} SET is_login = $1 where paspor_number = $2 `, data);
 }
 
-exports.getUserByVisaNumber = (numberVisa) => {
-  return execPromise(`SELECT id, number_visa, role, group_name, is_login from ${user} where number_visa = $1`, numberVisa)
+exports.getUserByVisaNumber = (passportNumber) => {
+  return execPromise(`SELECT id, paspor_number, role, group_name, is_login from ${user} where paspor_number = $1`, passportNumber)
 };
 
-exports.getUserById = (numberVisa) => {
-  return execPromise(`SELECT id from ${user} where number_visa = $1`, numberVisa)
+exports.getUserById = (passportNumber) => {
+  return execPromise(`SELECT id from ${user} where paspor_number = $1`, passportNumber)
 };
 

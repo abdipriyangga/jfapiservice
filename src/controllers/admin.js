@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log("why error: ", error);
+    return response(res, 500, 'An error occured!');
   }
 };
 
