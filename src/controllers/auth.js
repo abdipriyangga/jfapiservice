@@ -16,7 +16,7 @@ exports.login = async (req, res) => {
         await authModel.createIsLogin(['true', numberPassport])
         const role = checkNumberPassport.rows[0].role;
         const id = getIdUser.rows[0].id;
-        const token = jwt.sign({ id: checkNumberPassport.rows[0].id, number_visa: checkNumberPassport.rows[0].number_visa, role: checkNumberPassport.rows[0].role, group_name: checkNumberPassport.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '1 minutes' });
+        const token = jwt.sign({ id: checkNumberPassport.rows[0].id, number_visa: checkNumberPassport.rows[0].number_visa, role: checkNumberPassport.rows[0].role, group_name: checkNumberPassport.rows[0].group_name }, APP_SECRET_KEY, { expiresIn: '14 days' });
         // const tokenFirebase = await authModel.createTokenFirebaseUser([data.tokenFirebaseInput, id]);
         // console.log("TOJEN", tokenFirebase);
         return response(res, 200, 'Login Success!', { token, role, data });
