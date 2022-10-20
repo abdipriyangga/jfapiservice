@@ -18,7 +18,7 @@ exports.createUser = async (req, res) => {
   const dataOutDate = data.outDate;
   const dataUntilDate = data.untilDate;
   try {
-    const groupName = data.groupName.replace(/\s/g, '');
+    const groupName = data.groupName.replace(/\s/g, '_');
     const [month, day, year] = str.split('/');
     const [outMonth, outDay, outYear] = dataOutDate.split('/');
     const [untilMonth, untilDay, untilYear] = dataUntilDate.split('/');
