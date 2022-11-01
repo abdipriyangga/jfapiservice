@@ -163,14 +163,19 @@ exports.downloadFile = async (req, res) => {
       worksheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
       });
-      // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
+      // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`);
+
       // const data = await workbook.xlsx.writeBuffer();
-      const stream = fs.createReadStream(`${saves}/${name}-${time.getTime()}.xlsx`);
-      res.set({
-        'Content-Disposition': `attachment; filename='${name}-${time.getTime()}.xlsx'`,
-        'Content-Type': 'application/xlsx',
-      });
-      stream.pipe(res);
+      // const stream = fs.createReadStream(`${saves}/${name}-${time.getTime()}.xlsx`);
+      // res.set({
+      //   'Content-Disposition': `attachment; filename='${name}-${time.getTime()}.xlsx'`,
+      //   'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      // });
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename='${name}-${time.getTime()}.xlsx'`)
+      await workbook.xlsx.write(res);
+      res.end();
+      // stream.pipe(res);
       // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
       // const dataUrl = URL.createObjectURL(blobFile);
       // const link = document.createElement('a');
