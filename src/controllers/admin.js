@@ -8,8 +8,9 @@ const jwt = require('jsonwebtoken');
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
 const excelJS = require("exceljs");
-const { saveAs } = require("file-saver");
+const FileSaver = require("file-saver");
 const { Blob } = require('buffer');
+const { URL } = require('url');
 
 exports.createUser = async (req, res) => {
   const data = req.body;
@@ -163,10 +164,17 @@ exports.downloadFile = async (req, res) => {
         cell.font = { bold: true };
       });
       // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
-      const data = await workbook.xlsx.writeBuffer({ base64: true })
-      saveAs(
-        new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-        `${saves}/${name}-${time.getTime()}.xlsx`
+      const data = await workbook.xlsx.writeBuffer();
+      // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      // const dataUrl = URL.createObjectURL(blobFile);
+      // const link = document.createElement('a');
+      // req.
+      //   link.href = dataUrl;
+      // link.download = `${name}-${time.getTime()}.xlsx`;
+      // link.click()
+      FileSaver.saveAs(
+        new Blob([data], { type: 'application/xlsx' }),
+        `myFileExcel.xlsx`
       )
       console.log('====================================');
       console.log(data);
