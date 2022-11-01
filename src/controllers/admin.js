@@ -133,7 +133,7 @@ exports.downloadFile = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
-  let name = 'DataJamaah';
+  let name = 'Data Jamaah';
   const time = new Date();
   await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
@@ -171,10 +171,11 @@ exports.downloadFile = async (req, res) => {
       //   'Content-Disposition': `attachment; filename='${saves}/${name}-${time.getTime()}.xlsx'`,
       //   'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       // });
-      let nameFile = `${name}-${time.getTime()}.xlsx`;
+      let nameFile = `${name} - ${data}.xlsx`;
       res.setHeader('Access-Control-Expose-Headers', "Content-Disposition");
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', `attachment; filename='${nameFile}'`)
+      res.setHeader('Content-Disposition', `attachment; filename=${nameFile}`);
+      console.log(nameFile);
       await workbook.xlsx.write(res);
       // stream.pipe(res);
       // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
