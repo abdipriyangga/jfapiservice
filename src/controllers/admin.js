@@ -132,7 +132,7 @@ exports.downloadFile = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
-  let name = 'Data_Jamaah';
+  let name = 'Data Jamaah';
   await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
       // Column for data in excel. key must match data key
@@ -163,7 +163,7 @@ exports.downloadFile = async (req, res) => {
       let nameFile = `${name} - ${data}.xlsx`;
       res.setHeader('Access-Control-Expose-Headers', "Content-Disposition");
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', `attachment; filename=${nameFile}`);
+      res.setHeader('Content-Disposition', `attachment; filename=` + nameFile);
       await workbook.xlsx.write(res);
       res.end();
     } else {
