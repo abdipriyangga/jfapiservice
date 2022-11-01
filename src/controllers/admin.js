@@ -167,13 +167,13 @@ exports.downloadFile = async (req, res) => {
 
       // const data = await workbook.xlsx.writeBuffer();
       // const stream = fs.createReadStream(`${saves}/${name}-${time.getTime()}.xlsx`);
-      // res.set({
-      //   'Content-Disposition': `attachment; filename='${name}-${time.getTime()}.xlsx'`,
-      //   'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      // });
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', `attachment; filename='${name}-${time.getTime()}.xlsx'`)
-      await workbook.xlsx.write(res);
+      res.set({
+        'Content-Disposition': `attachment; filename='${name}-${time.getTime()}.xlsx'`,
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      // res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      // res.setHeader('Content-Disposition', `attachment; filename='${saves}/${name}-${time.getTime()}.xlsx'`)
+      await workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`);
       res.end();
       // stream.pipe(res);
       // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
