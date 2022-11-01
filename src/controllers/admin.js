@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
 const excelJS = require("exceljs");
+const { saveAs } = require("file-saver");
+const { Blob } = require('buffer');
 
 exports.createUser = async (req, res) => {
   const data = req.body;
@@ -132,7 +134,7 @@ exports.downloadFile = async (req, res) => {
   ).toLocaleDateString();
   let name = 'DataJamaah';
   const time = new Date();
-  await userModel.getUserByDeparture([data], (err, results, _fields) => {
+  await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
       // Column for data in excel. key must match data key
       worksheet.headerFooter = { firstFooter: "Hello" }
@@ -155,12 +157,21 @@ exports.downloadFile = async (req, res) => {
         worksheet.addRow(x); // Add data in worksheet
         counter++;
       });
-      console.log(results)
+      // console.log(results)
       // Making first line in excel bold
       worksheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
       });
-      const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
+      // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
+      const data = await workbook.xlsx.writeBuffer({ base64: true })
+      saveAs(
+        new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+        `${saves}/${name}-${time.getTime()}.xlsx`
+      )
+      console.log('====================================');
+      console.log(data);
+      console.log('====================================');
+
       return response(res, 200, 'Get data successfully!', data);
     } else {
       return response(res, 400, 'Cannot get data!', err);
