@@ -164,7 +164,13 @@ exports.downloadFile = async (req, res) => {
         cell.font = { bold: true };
       });
       // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`)
-      const data = await workbook.xlsx.writeBuffer();
+      // const data = await workbook.xlsx.writeBuffer();
+      const stream = fs.createReadStream(`${saves}/${name}-${time.getTime()}.xlsx`);
+      res.set({
+        'Content-Disposition': `attachment; filename='${name}-${time.getTime()}.xlsx'`,
+        'Content-Type': 'application/xlsx',
+      });
+      stream.pipe(res);
       // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
       // const dataUrl = URL.createObjectURL(blobFile);
       // const link = document.createElement('a');
@@ -172,13 +178,13 @@ exports.downloadFile = async (req, res) => {
       //   link.href = dataUrl;
       // link.download = `${name}-${time.getTime()}.xlsx`;
       // link.click()
-      FileSaver.saveAs(
-        new Blob([data], { type: 'application/xlsx' }),
-        `myFileExcel.xlsx`
-      )
-      console.log('====================================');
-      console.log(data);
-      console.log('====================================');
+      // FileSaver.saveAs(
+      //   new Blob([data], { type: 'application/xlsx' }),
+      //   `myFileExcel.xlsx`
+      // )
+      // console.log('====================================');
+      // console.log(data);
+      // console.log('====================================');
 
       return response(res, 200, 'Get data successfully!', data);
     } else {
