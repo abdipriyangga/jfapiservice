@@ -7,7 +7,7 @@ const cors = require('cors');
 adminRouter.post('/create', fileUpload, adminController.createUser);
 adminRouter.post('/login', adminController.login);
 adminRouter.post('/downloadPdf', adminController.downloadPdf);
-adminRouter.post('/downloadFiles', cors({ exposedHeaders: ['Content-Disposition'], }), adminController.downloadFile);
+adminRouter.get('/downloadFiles', cors({ exposedHeaders: ['Content-Disposition'], }), adminController.downloadFile);
 
 
 module.exports = adminRouter;
