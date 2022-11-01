@@ -125,7 +125,6 @@ exports.downloadPdf = async (req, res) => {
 exports.downloadFile = async (req, res) => {
   const workbook = new excelJS.Workbook();  // Create a new workbook
   const worksheet = workbook.addWorksheet("Data Jamaah", { properties: { tabColor: { argb: 'FF00FF00' } }, headerFooter: { firstHeader: "Data Jamaah", firstFooter: "Hello" } }); // New Worksheet
-  const saves = path.join(process.cwd(), 'public', 'documents');  // Path to download excel
   const { dateDeparture } = req.body;
   const [month, day, year] = dateDeparture.split('/');
   const data = new Date(
@@ -133,8 +132,7 @@ exports.downloadFile = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
-  let name = 'Data Jamaah';
-  const time = new Date();
+  let name = 'Data_Jamaah';
   await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
       // Column for data in excel. key must match data key
@@ -158,62 +156,19 @@ exports.downloadFile = async (req, res) => {
         worksheet.addRow(x); // Add data in worksheet
         counter++;
       });
-      // console.log(results)
       // Making first line in excel bold
       worksheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
       });
-      // const data = workbook.xlsx.writeFile(`${saves}/${name}-${time.getTime()}.xlsx`);
-
-      // const data = await workbook.xlsx.writeBuffer();
-      // const stream = fs.createReadStream(`${saves}/${name}-${time.getTime()}.xlsx`);
-      // res.set({
-      //   'Content-Disposition': `attachment; filename='${saves}/${name}-${time.getTime()}.xlsx'`,
-      //   'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      // });
       let nameFile = `${name} - ${data}.xlsx`;
       res.setHeader('Access-Control-Expose-Headers', "Content-Disposition");
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       res.setHeader('Content-Disposition', `attachment; filename=${nameFile}`);
-      console.log(nameFile);
       await workbook.xlsx.write(res);
-      // stream.pipe(res);
-      // const blobFile = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      // const dataUrl = URL.createObjectURL(blobFile);
-      // const link = document.createElement('a');
-      // req.
-      //   link.href = dataUrl;
-      // link.download = `${name}-${time.getTime()}.xlsx`;
-      // link.click()
-      // FileSaver.saveAs(
-      //   new Blob([data], { type: 'application/xlsx' }),
-      //   `myFileExcel.xlsx`
-      // )
-      // console.log('====================================');
-      // console.log(data);
-      // console.log('====================================');
-
       res.end();
-      // return response(res, 200, 'Get data successfully!', data);
     } else {
       return response(res, 400, 'Cannot get data!', err);
     }
   })
 
-  // try {
-  //   const data = await workbook.xlsx.writeFile(`${saves}/users.xlsx`)
-  //     .then(() => {
-  //       res.send({
-  //         status: "success",
-  //         message: "file successfully downloaded",
-  //         path: `${saves}/users.xlsx`,
-  //         results: data
-  //       });
-  //     });
-  // } catch (err) {
-  //   res.send({
-  //     status: "error",
-  //     message: "Something went wrong",
-  //   });
-  // }
 }
