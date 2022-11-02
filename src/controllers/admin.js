@@ -132,6 +132,11 @@ exports.downloadFile = async (req, res) => {
     +month - 1,
     +day,
   ).toLocaleDateString();
+  let date = new Date(dateDeparture).toLocaleDateString("en-GB", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
   let name = 'Data Jamaah';
   await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
@@ -160,7 +165,7 @@ exports.downloadFile = async (req, res) => {
       worksheet.getRow(1).eachCell((cell) => {
         cell.font = { bold: true };
       });
-      let nameFile = `${name} - ${data}.xlsx`;
+      let nameFile = `${name} - ${date}.xlsx`;
       res.setHeader('Access-Control-Expose-Headers', "Content-Disposition");
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
       res.setHeader('Content-Disposition', `attachment; filename=` + nameFile);
