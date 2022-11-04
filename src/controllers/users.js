@@ -38,14 +38,18 @@ exports.createUser = async (req, res) => {
       +untilDay,
     ).toLocaleDateString();
     data.pictures = path.join(process.env.APP_UPLOAD_ROUTE, req.file.filename);
-    const checkNumberVisa = await authModel.getUserByVisaNumber([data.numberVisa]);
-    if (checkNumberVisa.rowCount > 0) {
-      return response(res, 401, "Sorry your passport number already exist!")
-    }
-    await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
-    return response(res, 200, 'Create user has been successfully!', data);
+    const checkNumberPasspor = await authModel.getUserByVisaNumber([data.pasporNumber]);
 
+    if (checkNumberPasspor.rowCount > 0) {
+      return response(res, 401, "Sorry your passport number already exist!")
+    } else {
+      await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
+      return response(res, 200, 'Create user has been successfully!', data);
+    }
   } catch (error) {
+    if (error.code === '23505') {
+      return response(res, 400, "Sorry fullname already exist!");
+    }
     return response(res, 500, "An error occured!", error);
   }
 };

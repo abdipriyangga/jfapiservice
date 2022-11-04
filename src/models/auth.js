@@ -15,10 +15,10 @@ exports.createIsLogin = (data) => {
 }
 
 exports.getUserByVisaNumber = (passportNumber) => {
-  return execPromise(`SELECT id, paspor_number, role, group_name, is_login from ${user} where paspor_number = $1`, passportNumber)
+  return execPromise(`SELECT paspor_number from ${user} where paspor_number = $1 `, passportNumber);
 };
 
 exports.getUserById = (passportNumber) => {
-  return execPromise(`SELECT id from ${user} where paspor_number = $1`, passportNumber)
+  return execPromise(`SELECT id from ${user} where paspor_number = $1`, passportNumber);
 };
 
