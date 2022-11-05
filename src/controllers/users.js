@@ -38,7 +38,7 @@ exports.createUser = async (req, res) => {
       +untilDay,
     ).toLocaleDateString();
     data.pictures = path.join(process.env.APP_UPLOAD_ROUTE, req.file.filename);
-    const checkNumberPasspor = await authModel.getUserByVisaNumber([data.pasporNumber]);
+    const checkNumberPasspor = await authModel.getUserByPassporNumber([data.pasporNumber]);
 
     if (checkNumberPasspor.rowCount > 0) {
       return response(res, 401, "Sorry your passport number already exist!")
@@ -47,6 +47,7 @@ exports.createUser = async (req, res) => {
       return response(res, 200, 'Create user has been successfully!', data);
     }
   } catch (error) {
+    console.error(error)
     if (error.code === '23505') {
       return response(res, 400, "Sorry fullname already exist!");
     }
