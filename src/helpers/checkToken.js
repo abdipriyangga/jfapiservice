@@ -9,6 +9,7 @@ const token = (req, res, next) => {
         const token = req.headers.authorization.slice(7);
         const user = jwt.verify(token, APP_SECRET_KEY);
         req.authUser = user;
+        console.log("auto: ", req.authUser = user)
         if (req.authUser.role === 'jamaah') {
           next();
         }

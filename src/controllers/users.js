@@ -160,8 +160,10 @@ exports.getMemo = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
+    console.log("ada: ", req.headers.authorization)
     if (req.headers.authorization) {
       await userModel.logoutUsers(['false', req.authUser.id], (err, results, _fields) => {
+        console.log(results)
         if (!err) {
           return response(res, 200, 'Logout succesfully!');
         } else {
@@ -174,6 +176,7 @@ exports.logout = async (req, res) => {
     }
 
   } catch (error) {
+    console.error(error)
     return response(res, 500, 'An error occured!', error);
   }
 }
