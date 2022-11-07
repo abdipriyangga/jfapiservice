@@ -9,7 +9,7 @@ exports.login = async (req, res) => {
   const getIdUser = await authModel.getUserById([numberPassport]);
   const checkNumberPassport = await authModel.getUserByPassporNumber([numberPassport]);
   try {
-    console.log("DATA", checkNumberPassport.rows[0])
+
     if (checkNumberPassport.rowCount < 1) {
       return response(res, 404, "Passport number not found!")
     } else {
