@@ -6,8 +6,10 @@ const path = require('path');
 const admin = require('firebase-admin');
 const key = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-2f9a6caf7d.json')
 const keySec = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-b1bae45a5a.json');
-const { request } = require('http');
-const https = require('https');
+const fetch = (url) => import('node-fetch').then(({ default: fetch }) => fetch(url));
+const { BASE_URL_LOCAL } = process.env
+
+
 admin.initializeApp({
   credential: admin.credential.cert(keySec),
 })
@@ -200,55 +202,12 @@ exports.deleteByDeparture = async (req, res) => {
   }
 }
 
-exports.getDataJamaahFromClient = async (req, resp) => {
-  let str = ''
-
-  let data = request({
-    hostname: 'localhost',
-    path: 'http:localhost:3434/api/master-products/all',
-    port: 3434,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }, function (res) {
-    let temp = '';
-    //   //another chunk of data has been received, so append it to `str`
-    res.on('data', function (chunk, resp) {
-      temp += chunk;
-      // console.log(data.res.statusCode)
-      console.log(JSON.stringify(temp))
-      return JSON.stringify(temp)
-    });
-
-    res.on('end', function () {
-      console.log("end connection")
-    });
-  }).end()
-  // console.log("DATA ", data)
-  return response(resp, 200, 'get data success!', data)
-  // const options = {
-  //   host: 'localhost',
-  //   path: 'http://localhost:3434/api/master-products/all',
-  //   port: '3434'
-  // }
-
-  // let str = '';
-  // const callback = function (res) {
-  //   let temp = '';
-  //   //another chunk of data has been received, so append it to `str`
-  //   res.on('data', function (chunk) {
-  //     temp += chunk;
-  //   });
-
-  //   res.on('end', function () {
-  //     temp += str
-  //     console.log(temp)
-  //   });
-  // }
-
-  // const data = request(options, callback);
-  // data.end()
-  // console.log('sakdjP: ', str)
-  // return response(res, 200, 'Get data success!', data);
+exports.getDataJamaahFromClient = async (req, res) => {
+  try {
+    const callData = await fetch(`${BASE_URL_LOCAL}/master-products/all`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const result = await callData.json();
+    return response(res, 200, "Get data success!", result);
+  } catch (error) {
+    return response(res, 500, 'An error occured!', error);
+  }
 }
