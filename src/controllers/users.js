@@ -204,7 +204,7 @@ exports.deleteByDeparture = async (req, res) => {
 
 exports.getDataJamaahFromClient = async (req, res) => {
   try {
-    const callData = await fetch(`${BASE_URL_LOCAL}/master-products/all`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const callData = await fetch(`${BASE_URL_LOCAL}/data-jamaah/all-jamaah`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
     const result = await callData.json();
     return response(res, 200, "Get data success!", result);
   } catch (error) {
