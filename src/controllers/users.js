@@ -20,35 +20,22 @@ const Messaging = admin.messaging();
 exports.createUser = async (req, res) => {
   const data = req.body;
   const str = data.departure;
-  const dataOutDate = data.outDate;
-  const dataUntilDate = data.untilDate;
   try {
     const groupName = data.groupName.replace(/\s/g, '_');
     const [month, day, year] = str.split('/');
-    const [outMonth, outDay, outYear] = dataOutDate.split('/');
-    const [untilMonth, untilDay, untilYear] = dataUntilDate.split('/');
     const dateDeparture = new Date(
       +year,
       +month - 1,
       +day,
     ).toLocaleDateString();
-    const dateOut = new Date(
-      +outYear,
-      +outMonth - 1,
-      +outDay,
-    ).toLocaleDateString();
-    const dateUntil = new Date(
-      +untilYear,
-      +untilMonth - 1,
-      +untilDay,
-    ).toLocaleDateString();
+
     data.pictures = path.join(process.env.APP_UPLOAD_ROUTE, req.file.filename);
     const checkNumberPasspor = await authModel.getUserByPassporNumber([data.pasporNumber]);
 
     if (checkNumberPasspor.rowCount > 0) {
       return response(res, 401, "Sorry your passport number already exist!")
     } else {
-      await userModel.createUser([data.numberVisa, data.role, data.packageName, data.fullname, data.stayDuration, data.pasporNumber, data.nationality, dateDeparture, data.visaType, dateOut, dateUntil, data.linkGrup, data.idCategory, groupName, data.pictures, data.hotel_mekkah, data.hotel_madinah]);
+      await userModel.createUser([dateDeparture, data.pasporNumber, data.nationality, data.role, groupName, data.linkGrup, data.idCategory, data.pictures, data.hotel_mekkah, data.hotel_madinah, data.phone_number, data.packageName, data.fullname, data.email, data.gender]);
       return response(res, 200, 'Create user has been successfully!', data);
     }
   } catch (error) {
