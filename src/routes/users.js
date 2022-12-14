@@ -12,6 +12,6 @@ userRouter.post('/getDataGroup', userController.selectUserByDateDeparture);
 userRouter.get('/getTotal', userController.countUserByDateDeparture);
 userRouter.get('/getProfile', token, userController.getProfile);
 userRouter.get('/getMemo', token, userController.getMemo);
-userRouter.get('/getDataJamaahFromClient', userController.getDataJamaahFromClient);
+userRouter.get('/getDataDeparture', userController.getDataDepartureFromApiMarkeplace);
 
 module.exports = userRouter;
