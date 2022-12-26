@@ -35,7 +35,7 @@ exports.createUser = async (req, res) => {
     if (checkNumberPasspor.rowCount > 0) {
       return response(res, 401, "Sorry your passport number already exist!")
     } else {
-      await userModel.createUser([dateDeparture, data.pasporNumber, data.nationality, data.role, groupName, data.linkGrup, data.idCategory, data.pictures, data.hotel_mekkah, data.hotel_madinah, data.phone_number, data.packageName, data.fullname, data.email, data.gender]);
+      await userModel.createUser([dateDeparture, data.pasporNumber, data.nationality, data.role, groupName, data.linkGrup, data.pictures, data.hotel_mekkah, data.hotel_madinah, data.phone_number, data.packageName, data.fullname, data.email, data.gender]);
       return response(res, 200, 'Create user has been successfully!', data);
     }
   } catch (error) {
@@ -192,6 +192,15 @@ exports.deleteByDeparture = async (req, res) => {
 exports.getDataDepartureFromApiMarkeplace = async (req, res) => {
   try {
     const callData = await fetch(`${BASE_URL_LOCAL}/adm-ticketing/allDepartureDate`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const result = await callData.json();
+    return response(res, 200, "Get data success!", result);
+  } catch (error) {
+    return response(res, 500, 'An error occured!', error);
+  }
+}
+exports.getDataHotelFromHotelsMaster = async (req, res) => {
+  try {
+    const callData = await fetch(`${BASE_URL_LOCAL}/adm-hotel/hotel-master/all-data-service`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
     const result = await callData.json();
     return response(res, 200, "Get data success!", result);
   } catch (error) {

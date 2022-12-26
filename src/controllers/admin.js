@@ -8,9 +8,6 @@ const jwt = require('jsonwebtoken');
 const fs = require("fs");
 const PDFDocument = require("pdfkit-table");
 const excelJS = require("exceljs");
-const FileSaver = require("file-saver");
-const { Blob } = require('buffer');
-const { URL } = require('url');
 
 exports.createUser = async (req, res) => {
   const data = req.body;
@@ -71,15 +68,12 @@ exports.downloadPdf = async (req, res) => {
         const table = {
           title: { label: `DATA JAMAAH TANGGAL: ${dateDeparture}`, fontSize: 8 },
           headers: [
-            { label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "name" },
+            { label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "fullname" },
             { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "paket" },
-            { label: "Nomor Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "nomorVisa" },
-            { label: "Tanggal Dikeluarkan", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "outDate" },
-            { label: "Berlaku Sampai", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "validDate" },
-            { label: "Durasi Tinggal", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "stayDuration" },
-            { label: "Tipe Visa", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "visaType" },
-            { label: "Nomor Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "pasporNumber" },
-            { label: "Negara", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "nationality" }],
+            { label: "No Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "passpor_number" },
+            { label: "Nomor HP", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "outDate" },
+            { label: "Jenis Kelamin", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "gender" },
+            { label: "Email", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "email" }],
           datas: dataUser.rows.map((x) => {
             console.log(x)
             return {
@@ -123,8 +117,6 @@ exports.downloadPdf = async (req, res) => {
 }
 
 exports.downloadFile = async (req, res) => {
-  const workbook = new excelJS.Workbook();  // Create a new workbook
-  const worksheet = workbook.addWorksheet("Data Jamaah", { properties: { tabColor: { argb: 'FF00FF00' } }, headerFooter: { firstHeader: "Data Jamaah", firstFooter: "Hello" } }); // New Worksheet
   const { dateDeparture } = req.body;
   const [month, day, year] = dateDeparture.split('/');
   const data = new Date(
@@ -137,6 +129,8 @@ exports.downloadFile = async (req, res) => {
     day: "numeric",
     year: "numeric",
   });
+  const workbook = new excelJS.Workbook();  // Create a new workbook
+  const worksheet = workbook.addWorksheet(`Data Group Keberangkatan ${date}`, { properties: { tabColor: { argb: 'FF00FF00' } }, headerFooter: { firstHeader: "Detail Data Group", firstFooter: "Hello" } }); // New Worksheet
   let name = 'Data Jamaah';
   await userModel.getUserByDeparture([data], async (err, results, _fields) => {
     if (!err) {
@@ -146,13 +140,10 @@ exports.downloadFile = async (req, res) => {
         { header: "No", key: "s_no", width: 23, style: { alignment: { horizontal: 'center' } } },
         { header: "Nama Lengkap", key: "fullname", width: 23, style: { alignment: { horizontal: 'center' } } },
         { header: "Paket", key: "package_name", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Nomor Visa", key: "number_visa", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Tanggal Dikeluarkan", key: "out_date", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Berlaku Sampai", key: "until_date", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Durasi Tinggal", key: "stay_duration", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Tipe Visa", key: "visa_type", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Nomor Passport", key: "paspor_number", width: 23, style: { alignment: { horizontal: 'center' } } },
-        { header: "Negara", key: "nationality", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "No Paspor", key: "passpor_number", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Nomor HP", key: "phone_number", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Jenis Kelamin", key: "gender", width: 23, style: { alignment: { horizontal: 'center' } } },
+        { header: "Email", key: "email", width: 23, style: { alignment: { horizontal: 'center' } } },
       ];
       // Looping through User data
       let counter = 1;

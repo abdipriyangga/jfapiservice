@@ -13,5 +13,6 @@ userRouter.get('/getTotal', userController.countUserByDateDeparture);
 userRouter.get('/getProfile', token, userController.getProfile);
 userRouter.get('/getMemo', token, userController.getMemo);
 userRouter.get('/getDataDeparture', userController.getDataDepartureFromApiMarkeplace);
+userRouter.get('/getDataHotels', userController.getDataHotelFromHotelsMaster);
 
 module.exports = userRouter;
