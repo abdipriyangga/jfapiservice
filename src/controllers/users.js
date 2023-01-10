@@ -153,7 +153,6 @@ exports.getMemo = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    console.log("ada: ", req.headers.authorization)
     if (req.headers.authorization) {
       await userModel.logoutUsers(['false', req.authUser.id], (err, results, _fields) => {
         console.log(results)
