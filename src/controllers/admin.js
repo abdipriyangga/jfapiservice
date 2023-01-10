@@ -46,73 +46,80 @@ exports.login = async (req, res) => {
 };
 
 exports.downloadPdf = async (req, res) => {
-  // init document
-  let doc = new PDFDocument({ margin: 10, size: 'A4', bufferPages: true });
-  const { dateDeparture } = req.body;
-  const [month, day, year] = dateDeparture.split('/');
-  const data = new Date(
-    +year,
-    +month - 1,
-    +day,
-  ).toLocaleDateString();
-  // save document
-  const time = new Date();
-  let name = 'document' + '-' + time.getTime();
-  // process.chdir('../../');
-  const saveOut = path.resolve(path.join(process.cwd(), 'public', 'documents'));
-  doc.pipe(fs.createWriteStream(`${saveOut}/${name}`));
-  await userModel.getUserByDeparture([data], (err, dataUser, _fields) => {
-    if (!err) {
-      ; (async function () {
-        // table 
-        const table = {
-          title: { label: `DATA JAMAAH TANGGAL: ${dateDeparture}`, fontSize: 8 },
-          headers: [
-            { label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "fullname" },
-            { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "paket" },
-            { label: "No Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "passpor_number" },
-            { label: "Nomor HP", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "outDate" },
-            { label: "Jenis Kelamin", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "gender" },
-            { label: "Email", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "email" }],
-          datas: dataUser.rows.map((x) => {
-            console.log(x)
-            return {
-              name: x.fullname,
-              paket: x.package_name,
-              nomorVisa: x.number_visa,
-              outDate: x.out_date,
-              validDate: x.until_date,
-              stayDuration: x.stay_duration,
-              visaType: x.visa_type,
-              pasporNumber: x.paspor_number,
-              nationality: x.nationality
-            }
-          })
-        };
-        // A4 595.28 x 841.89 (portrait) (about width sizes)
-        await doc.table(table, {
-          prepareHeader: () => {
-            doc.font("Helvetica-Bold").fontSize(6)
-          },
-          prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-            doc.font("Helvetica").fontSize(8);
-            indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.10);
-          },
-        });
-      })();
-      // let file = fs.createReadStream(`${saveOut}/${name}`);
-      // let stat = fs.statSync(`${saveOut}/${name}`);
-      // res.setHeader('Content-Length', stat.size);
-      // res.setHeader('Content-Type', 'application/pdf');
-      // res.setHeader('Content-Disposition', `attachment; filename=dataJamaah.pdf`);
-      // file.pipe(res)
-      doc.end();
-      return response(res, 200, 'Get data successfully!', dataUser.rows);
-    }
-    else {
-      return response(res, 400, 'Cannot get data!', err);
-    }
-  })
+  try {
+    // init document
+    let doc = new PDFDocument({ margin: 10, size: 'A4', bufferPages: true });
+    const { dateDeparture } = req.body;
+    const [month, day, year] = dateDeparture.split('/');
+    const data = new Date(
+      +year,
+      +month - 1,
+      +day,
+    ).toLocaleDateString();
+    let date = new Date(dateDeparture).toLocaleDateString("en-GB", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    // save document
+    let name = `DATA JAMAAH`;
+    const saveOut = path.resolve(path.join(process.cwd(), 'public', 'documents'));
+
+    await userModel.getUserByDeparture([data], async (err, dataUser, _fields) => {
+      if (!err) {
+        ; (async function () {
+          // table 
+          const table = {
+            title: { label: `DATA JAMAAH KEBERANGKATAN ${dateDeparture}`, fontSize: 10 },
+            headers: [
+              { label: "No", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "no" },
+              { label: "Nama Lengkap", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "fullname" },
+              { label: "Paket", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "package_name" },
+              { label: "No Paspor", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "passpor_number" },
+              { label: "Nomor HP", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "phone_number" },
+              { label: "Jenis Kelamin", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "gender" },
+              { label: "Email", align: "center", headerColor: "#DCAF34", headerOpacity: 1, property: "email" }],
+            datas: dataUser.rows.map((x, idx) => {
+              return {
+                no: idx + 1,
+                fullname: x.fullname,
+                package_name: x.package_name,
+                passpor_number: x.passpor_number,
+                phone_number: x.phone_number,
+                gender: x.gender,
+                email: x.email
+              }
+            })
+          };
+          // A4 595.28 x 841.89 (portrait) (about width sizes)
+
+          await doc.table(table, {
+            prepareHeader: () => {
+              doc.font("Helvetica-Bold").fontSize(6)
+            },
+            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+              doc.font("Helvetica").fontSize(8);
+              indexColumn === 0 && doc.addBackground(rectRow, 'white', 0.10);
+            },
+          });
+        })();
+        let nameFile = `${name} - ${date}.pdf`;
+        res.setHeader('Access-Control-Expose-Headers', "Content-Disposition");
+        res.setHeader('Content-Disposition', `attachment; filename=${nameFile}`);
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Content-Type', 'application/pdf');
+        doc.pipe(fs.createWriteStream(`${saveOut}/${nameFile}`));
+        await doc.pipe(res);
+        doc.end();
+      }
+      else {
+        return response(res, 400, 'Cannot get data!', err);
+      }
+    })
+  } catch (error) {
+    console.error(error)
+    return response(res, 500, 'An error occured!', error);
+  }
 
 }
 
