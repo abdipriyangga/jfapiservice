@@ -17,7 +17,7 @@ exports.createUser = (data) => {
 }
 
 exports.getUserProfile = (id, cb) => {
-  return execPromise(`Select id, email,passpor_number, package_name, fullname, phone_number, gender, nationality, link_group, group_name, picture, hotel_mekkah, hotel_madinah from ${user} where id = $1`, id, cb);
+  return execPromise(`Select id, TO_CHAR(${user}.departure :: DATE, 'mm/dd/yyyy') as departure, email,passpor_number, package_name, fullname, phone_number, gender, nationality, link_group, group_name, picture, hotel_mekkah, hotel_madinah from ${user} where id = $1`, id, cb);
 };
 
 exports.addMemo = (data, cb) => {
