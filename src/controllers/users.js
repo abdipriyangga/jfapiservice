@@ -9,11 +9,11 @@ const fetch = (url) => import('node-fetch').then(({ default: fetch }) => fetch(u
 const { BASE_URL_LOCAL } = process.env
 
 
-admin.initializeApp({
-  credential: admin.credential.cert(keySec),
-})
+// admin.initializeApp({
+//   credential: admin.credential.cert(keySec),
+// })
 
-const Messaging = admin.messaging();
+// const Messaging = admin.messaging();
 
 
 exports.createUser = async (req, res) => {
