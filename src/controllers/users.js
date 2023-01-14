@@ -4,8 +4,7 @@ const { response } = require('../helpers/response');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const admin = require('firebase-admin');
-const key = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-2f9a6caf7d.json')
-const keySec = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-b1bae45a5a.json');
+const keySec = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-b720bd28d3.json');
 const fetch = (url) => import('node-fetch').then(({ default: fetch }) => fetch(url));
 const { BASE_URL_LOCAL } = process.env
 
