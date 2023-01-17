@@ -4,16 +4,16 @@ const { response } = require('../helpers/response');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const admin = require('firebase-admin');
-const keySec = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-b720bd28d3.json');
+const keySec = require('../../private/jf-service-7a84a-firebase-adminsdk-ofi39-fcb8d43352.json');
 const fetch = (url) => import('node-fetch').then(({ default: fetch }) => fetch(url));
 const { BASE_URL_LOCAL } = process.env
 
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(keySec),
-// })
+admin.initializeApp({
+  credential: admin.credential.cert(keySec),
+})
 
-// const Messaging = admin.messaging();
+const Messaging = admin.messaging();
 
 
 exports.createUser = async (req, res) => {
