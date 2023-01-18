@@ -189,7 +189,15 @@ exports.deleteByDeparture = async (req, res) => {
 
 exports.getDataDepartureFromApiMarkeplace = async (req, res) => {
   try {
-    const callData = await fetch(`${BASE_URL_LOCAL}/adm-ticketing/allDepartureDate`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const callData = await fetch(`${BASE_URL_LOCAL}/adm-ticketing/allDepartureDate`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "Access-Control-Request-Headers": "*",
+        "Access-Control-Request-Method": "*"
+      },
+      mode: 'cors'
+    });
     const result = await callData.json();
     return response(res, 200, "Get data success!", result);
   } catch (error) {
@@ -198,7 +206,15 @@ exports.getDataDepartureFromApiMarkeplace = async (req, res) => {
 }
 exports.getDataHotelFromHotelsMaster = async (req, res) => {
   try {
-    const callData = await fetch(`${BASE_URL_LOCAL}/adm-hotel/hotel-master/all-data-service`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    const callData = await fetch(`${BASE_URL_LOCAL}/adm-hotel/hotel-master/all-data-service`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        "Access-Control-Request-Headers": "*",
+        "Access-Control-Request-Method": "*"
+      },
+      mode: 'cors'
+    });
     const result = await callData.json();
     return response(res, 200, "Get data success!", result);
   } catch (error) {

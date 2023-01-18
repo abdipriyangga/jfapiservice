@@ -8,7 +8,8 @@ const cors = require('cors');
 
 app.use(cors({
   origin: ["http://localhost:6969", "http://localhost:3000", "https://jannahfirdaus.com", "https://nest.jannahfirdaus.com", "https://service.jannahfirdaus.com"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: []
 }));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
